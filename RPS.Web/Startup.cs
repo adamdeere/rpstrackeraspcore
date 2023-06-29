@@ -33,7 +33,7 @@ namespace RPS.Web
             services.AddSingleton<IPtTasksRepository, PtTasksRepository>(c => new PtTasksRepository(tempDataContext));
             services.AddSingleton<IPtCommentsRepository, PtCommentsRepository>(c => new PtCommentsRepository(tempDataContext));
 
-
+            services.AddKendo();
             services.AddRazorPages();
 
             services.AddMvc()

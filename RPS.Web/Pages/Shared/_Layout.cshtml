@@ -5,11 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RPS</title>
 
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/kendo/styles/kendo.default-v2.css" rel="stylesheet" asp-append-version="true" />
+  
+  
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+   
 
     @RenderSection("styles", required: false)
 
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/kendo/js/kendo.all.min.js"></script>
+    <script src="~/lib/kendo/js/kendo.aspnetmvc.min.js"></script>
+    @Html.Kendo().DeferredScripts();
+    @RenderSection("scripts", required: false)
 
 </head>
 <body>
@@ -188,8 +198,6 @@
         </footer>
 
     </div>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    @RenderSection("scripts", required: false)
+  
 </body>
 </html>
