@@ -7,49 +7,79 @@
     <div class="form-group row">
         <label asp-for="@Model.Title" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <input type="text" asp-for="@Model.Title" class="form-control" />
+            @(
+                Html.Kendo().TextBox()
+                .Name("Title")
+                .HtmlAttributes(new { style = "width: 100%" })
+                )
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.Description" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <textarea asp-for="@Model.Description" class="form-control"></textarea>
+            @(
+                Html.Kendo().TextArea()
+                .Name("Description")
+                .HtmlAttributes(new { style = "width: 100%; height: 60px" })
+             )
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.Estimate" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <input type="range" asp-for="@Model.Estimate" min="0" max="20" step="1" class="form-control" />
+
+            <kendo-slider for="@Model.Estimate" min="0" max="20" large-step="1" style="width:100%"></kendo-slider>
+          
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.SelectedItemType" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <select asp-for="@Model.SelectedItemType" asp-items="@Model.ItemTypes" class="form-control"></select>
+
+            <kendo-dropdownlist name="SelectedItemType"
+                                value="@Model.SelectedItemType"
+                                bind-to="@Model.ItemTypes"
+                                template-id="templateItemType">
+            </kendo-dropdownlist>
+           
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.SelectedStatus" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <select asp-for="@Model.SelectedStatus" asp-items="@Model.Statuses" class="form-control"></select>
+
+            <kendo-dropdownlist name="SelectedStatus"
+                                value="@Model.SelectedStatus"
+                                bind-to="@Model.Statuses">
+            </kendo-dropdownlist>
+            
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.SelectedPriority" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <select asp-for="@Model.SelectedPriority" asp-items="@Model.Priorities" class="form-control"></select>
+
+            <kendo-dropdownlist name="SelectedPriority"
+                                value="@Model.SelectedPriority" 
+                                bind-to="@Model.Priorities"
+                                template-id="templatePriorityType">
+            </kendo-dropdownlist>
         </div>
     </div>
 
     <div class="form-group row">
         <label asp-for="@Model.SelectedAssigneeId" class="col-sm-2 col-form-label"></label>
         <div class="col-sm-6">
-            <select asp-for="@Model.SelectedAssigneeId" asp-items="@Model.Users" class="form-control"></select>
+            @(Html.Kendo().DropDownList()
+                .Name("SelectedAssigneeId")
+                .BindTo(Model.Users)
+             )
+        
         </div>
     </div>
 
@@ -60,3 +90,17 @@
         </div>
     </div>
 </form>
+
+<script id="templatePriorityType" type="text/x-kendo-template">
+    <span class='badge priority-#:data.toLowerCase()#'>#:data#</span>
+
+</script>
+<script id="templateItemType" type="text/x-kendo-template">
+    <img class="backlog-icon" src="@Url.Content("~/images/icon_#:data#.png")"/>
+    <span>#:data#</span>
+</script>
+
+<script id="templateSelectedAssignee" type="text/x-kendo-template">
+    <img class="backlog-icon" src="@Url.Content("~/#:data#.png")"/>
+    <span>#:data#</span>
+</script>

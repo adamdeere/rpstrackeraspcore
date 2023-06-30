@@ -3,6 +3,7 @@
 
 @{ 
     var userId = ViewData["userId"];
+    var months = ViewData["months"];
 }
 
 <div class="dashboard">
@@ -24,29 +25,42 @@
 
         <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group mr-2">
-                <button type="button" class="pt-class-range-filter" data-range="3" onclick="location.href = '/?months=3&userId=@userId'">
-                    3 Months
-                </button>
-                <button type="button" class="pt-class-range-filter" data-range="6" onclick="location.href = '/?months=6&userId=@userId'">
-                    6 Months
-                </button>
-                <button type="button" class="pt-class-range-filter" data-range="12" onclick="location.href = '/?months=12&userId=@userId'">
-                    1 Year
-                </button>
 
-                @(Html.Kendo().Button()
-                    .Name("lols")
-                    .HtmlAttributes(new { type = "button" })
-                    .Content("Text button")
-                    .Events(ev => ev.Click("openAction")))
+                <div class="btn-group mr-2">
+                    <kendo-combobox name="filterAssignee"
+                                    bind-to="Model.Assignees"
+                                    value="@Model.SelectedAssigneeId"
+                                    datatextfield="FullName"
+                                    datavaluefield="Id"
+                                    placeholder="Select assignee"
+                                    on-change="OnAssigneeChange"
+                                    template-id="TemplateAssignee"
+                                    style="width:260px">
+
+                    </kendo-combobox>
+                </div>
+
+            <kendo-button name="#btnFilter3Months" 
+                          deferred=true
+                          on-click="function(){ location.href = '/?months=3&userId=@userId' }">
+                          3 Months
+            </kendo-button>
+                
+            <kendo-button name="#btnFilter6Months" 
+                          deferred=true
+                          on-click="function(){ location.href = '/?months=6&userId=@userId' }">
+                          6 Months
+            </kendo-button>
+                
+            <kendo-button name="#btnFilter12Months" 
+                          deferred=true
+                          on-click="function(){ location.href = '/?months=12&userId=@userId' }">
+                          12 Months
+            </kendo-button>
+                
             </div>
         </div>
     </div>
-    <script>
-        function onClick(e) {
-         alert("thankls");
-        }
-    </script>
 
     <div class="card">
         <h3 class="card-header">Active Issues</h3>
@@ -99,6 +113,41 @@
                 <div class="col-sm-12">
                     <h3>All issues</h3>
 
+                    <kendo-chart name="chart" theme="sass">
+                        <chart-title text="All Issues"></chart-title>
+
+                        <series-defaults type="ChartSeriesType.Column"
+                                         gap=0.06>
+                            
+                            <stack enabled=true />
+                        </series-defaults>
+
+                        <series>
+                            <series-item data="Model.ItemsByMonth"
+                                         name="Open"
+                                         color="#CC3458"
+                                         opacity="0.7">
+
+                            </series-item>
+                            <series-item data="Model.ItemsClosedByMonth"
+                                         name="Closed"
+                                         color="#35C473"
+                                         opacity="0.7">
+
+                            </series-item>
+                        </series>
+                        <category-axis>
+                            <category-axis-item 
+                            type="ChartCategoryAxisType.Date"
+                            categories="Model.Categories">
+
+                             <major-grid-lines visible=false/>
+                            </category-axis-item>
+                        </category-axis>
+                        <chart-legend position="ChartLegendPosition.Bottom">
+
+                        </chart-legend>
+                    </kendo-chart>
                 </div>
             </div>
 
@@ -107,13 +156,41 @@
 
 </div>
 
-
+<script id="TemplateAssignee" type="text/x-kendo-template">
+       <div class="row" style="margin-left: 5px">
+        <img src="@Url.Content("~/#:data.Avatar#")" class="li-avatar rounded mx-auto"/>
+        <span style="margin-left: 5px">#:data.FullName#</span>
+    </div>
+</script>
 
 @section styles {
     <link href="~/css/dashboard.css" rel="stylesheet" />
 }
 @section scripts {
+    <script>
 
+        @{
+            var userIdParam = "";
+            var monthsParam = "";
+            if (userId != null)
+            {
+                userIdParam = $"&userId={userId}";
+            }
+            if (months != null)
+            {
+                monthsParam = $"months={months}";
+            }
+        }
+            function OnAssigneeChange(e) {
+               
+                var userId = e.sender.value();
+                if (userId) {
+                    location.href = `/?userId=${userId}&@Html.Raw(monthsParam)`;
+                } else {
+                    location.href = `/?@Html.Raw(monthsParam)`;
+                }
+            }
+    </script>
 }
 
 

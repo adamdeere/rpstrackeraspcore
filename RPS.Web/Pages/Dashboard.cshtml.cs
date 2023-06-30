@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using RPS.Core.Models;
 using RPS.Core.Models.Dto;
 using RPS.Data;
 
@@ -12,12 +13,19 @@ namespace RPS.Web.Pages
     public class DashboardModel : PageModel
     {
         private readonly IPtDashboardRepository rpsDashRepo;
-
+        private readonly IPtUserRepository rpsUserRepo;
         public DateTime? DateStart { get; set; }
         public DateTime? DateEnd { get; set; }
 
         public int IssueCountOpen { get; set; }
         public int IssueCountClosed { get; set; }
+
+        public int? SelectedAssigneeId { get; set; }
+        public List<PtUser> Assignees { get; set; }
+        public object[] Categories { get; set; }
+
+        public List<int> ItemsByMonth { get; set; }
+        public List<int> ItemsClosedByMonth { get; set; }
 
         public int IssueCountActive { get { return IssueCountOpen + IssueCountClosed; } }
         public decimal IssueCloseRate { 
@@ -32,9 +40,10 @@ namespace RPS.Web.Pages
         }
 
 
-        public DashboardModel(IPtDashboardRepository rpsDashData)
+        public DashboardModel(IPtDashboardRepository rpsDashData, IPtUserRepository rpsUserData)
         {
             rpsDashRepo = rpsDashData;
+            rpsUserRepo = rpsUserData;
         }
 
         public void OnGet(int? userId, int? months)
@@ -61,6 +70,22 @@ namespace RPS.Web.Pages
                 DateStart = filter.DateStart;
                 DateEnd = filter.DateEnd;
             }
+            Assignees = rpsUserRepo.GetAll().ToList();
+            if (userId.HasValue)
+            {
+                SelectedAssigneeId = userId.Value;
+            }
+
+            var filteredIssues = rpsDashRepo.GetFilteredIssues(filter);
+            Categories = filteredIssues.Categories.Select(i => (object)i).ToArray();
+            ItemsByMonth = new List<int>();
+            ItemsClosedByMonth = new List<int>();
+
+            filteredIssues.MonthItems.ForEach(i =>
+            {
+                ItemsByMonth.Add(i.Open.Count);
+                ItemsClosedByMonth.Add(i.Closed.Count);
+            });
         }
     }
 }

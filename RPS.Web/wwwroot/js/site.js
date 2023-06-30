@@ -3,6 +3,3 @@
 
 // Write your Javascript code.
 
-function openAction() {
-    alert("lols");
-}
