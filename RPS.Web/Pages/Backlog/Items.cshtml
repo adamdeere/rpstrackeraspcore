@@ -1,4 +1,6 @@
 ﻿@page "/Backlog/{Preset?}"
+@using Microsoft.AspNetCore.Razor.Language;
+@using System.IO;
 @model RPS.Web.Pages.Backlog.ItemsModel
 
 
@@ -17,48 +19,56 @@
 
     </div>
 </div>
+@{
+    var line = string.Empty;
+    using (StreamReader sr = new StreamReader("Pages/Shared/_Lol.cshtml"))
+    {
+         line = sr.ReadToEnd();
+    }
+}
 
-<div class="table-responsive">
-    <table class="table table-striped table-sm table-hover">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Assignee</th>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Priority</th>
-                <th>Estimate</th>
-                <th>Created</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr class="pt-table-row" onclick="location.href = '/@item.Id/Details'">
+@(Html.Kendo()
+      .Grid(Model.GridData)
+      .Name("grid")
+      .Columns(colums =>
+      {
+          colums.Bound(c => c.Type)
+          .Title(" ")
+          .Width(50);
 
-                    <td>
-                        <item-type-indicator item-type="@item.Type" class="backlog-icon"></item-type-indicator>
-                    </td>
-                    <td>
-                        <user-avatar user="@item.Assignee"></user-avatar>
-                    </td>
-                    <td><span class="li-title">@Html.DisplayFor(modelItem => item.Title)</span></td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Status)
-                    </td>
-                    <td>
-                        <priority-indicator priority="@item.Priority"></priority-indicator>
-                    </td>
-                    <td><span class="li-estimate">@Html.DisplayFor(modelItem => item.Estimate)</span></td>
-                    <td><span class="li-date">@item.DateCreated.ToString("MMM d, yyyy")</span></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+          colums.Bound(c => c.AssigneeFullName)
+          .Title("Assignee")
+          .Width(120);
 
+          colums.Bound(c => c.Title);
+          colums.Bound(c => c.Priority)
+          .Width(100);
+
+          colums.Bound(c => c.Estimate)
+          .Width(100);
+
+          colums.Bound(c => c.DateCreated)
+                .Title("Created")
+                .Width(160);
+                
+      })
+      .ClientRowTemplate(@line)
+                .Pageable()
+                .Sortable()
+                .Scrollable(scr => scr.Height(430))
+                .Selectable()
+                .Events(events =>
+                {
+                    events.Change("onChange");
+                })
+)
 
 @section styles {
     <link href="~/css/backlog.css" rel="stylesheet" />
+}
+
+
+@section scripts {
+    <script src="~/js/item.js" asp-append-version="true"></script>
 }
 

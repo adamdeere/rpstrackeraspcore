@@ -1,0 +1,29 @@
+﻿<tr>
+    
+    <td>
+        <div class='pt-indicator' data-id='#:data.Id#'>
+            <img src='#:imageResFromType(data.Type)#' class='backlog-icon' />
+        </div>
+    </td>
+   
+    <td>
+        <img src='/#:data.AssigneeAvatar#' class='li-avatar rounded mx-auto d-block' />
+    </td>
+ 
+    <td>
+        <span class='li-title'>#:data.Title#</span>
+    </td>
+   
+    <td>
+        <span class='badge #:getIndicatorClass(data.Priority)#'>#:data.Priority#</span>
+    </td>
+  
+    <td>
+        <span class='li-estimate'>#:data.Estimate#</span>
+    </td>
+  
+    <td>
+        <span class='li-date'>#:data.DateCreated.toDateString()#</span>
+    </td>
+   
+</tr>
